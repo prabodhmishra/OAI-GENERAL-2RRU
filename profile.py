@@ -15,7 +15,9 @@ Use this profile to instantiate an experiment using Open Air Interface
 to realize an end-to-end LTE mobile network. The profile supports two
 variants: (i) a simulated RAN (UE and eNodeB) connected to an EPC, or
 (ii) an OTS UE (Nexus 5) connected to an SDR-based eNodeB via a
-controlled RF attenuator and connected to an EPC.
+controlled RF attenuator and connected to an EPC.(iii) an OTS UE 
+(Nexus 5) connected to 2 RRUs via controlled RF attenuator, RRUs 
+would be connected to an SDR-based eNodeB further connected to an EPC.
 
 The simulated version of the profile uses the following resources:
 
