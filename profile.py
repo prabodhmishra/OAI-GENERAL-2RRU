@@ -292,17 +292,17 @@ else:
     rru1link = request.Link("fhaul-1")
     rru1link.addNode(rru1)  
     rru1link.addNode(enb1)
-	rru1link.link_multiplexing = True
-	rru1link.vlan_tagging = True
-	rru1link.best_effort = True  
+    rru1link.link_multiplexing = True
+    rru1link.vlan_tagging = True
+    rru1link.best_effort = True  
     
     # Add a link connecting RRU1 and the NUC eNB.
     rru2link = request.Link("fhaul-2")
     rru2link.addNode(rru2)  
     rru2link.addNode(enb1)
-	rru2link.link_multiplexing = True
-	rru2link.vlan_tagging = True
-	rru2link.best_effort = True      
+    rru2link.link_multiplexing = True
+    rru2link.vlan_tagging = True
+    rru2link.best_effort = True      
 
     # Add a link connecting the NUC eNB and the OAI EPC node.
     epclink.addNode(enb1)    
