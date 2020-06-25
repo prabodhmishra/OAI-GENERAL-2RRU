@@ -196,7 +196,7 @@ if params.TYPE == "sim":
     sim_enb.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r SIM_ENB"))
     connectOAI_DS(sim_enb, 1)
     epclink.addNode(sim_enb)
-else if params.TYPE == "atten":
+elif params.TYPE == "atten":
     # Add a node to act as the ADB target host
     adb_t = request.RawPC("adb-tgt")
     adb_t.disk_image = GLOBALS.ADB_IMG
