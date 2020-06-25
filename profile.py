@@ -151,7 +151,7 @@ pc = portal.Context()
 sim_hardware_types = ['d430','d740']
 
 pc.defineParameter("TYPE", "Experiment type",
-                   portal.ParameterType.STRING,"sim",[("sim","Simulated UE/eNodeB"),("atten","OTS UE with RF attenuator")],
+                   portal.ParameterType.STRING,"2RRU",[("sim","Simulated UE/eNodeB"),("atten","OTS UE with RF attenuator"),("2RRU","OTS UE with RF attenuator and 2 RRUs")],
                    longDescription="*Simulated RAN*: OAI simulated UE/eNodeB connected to an OAI EPC. *OTS UE/SDR-based eNodeB with RF attenuator connected to OAI EPC*: OTS UE (Nexus 5) connected to controllable RF attenuator matrix.")
 
 pc.defineParameter("FIXED_UE", "Bind to a specific UE",
@@ -160,6 +160,12 @@ pc.defineParameter("FIXED_UE", "Bind to a specific UE",
 pc.defineParameter("FIXED_ENB", "Bind to a specific eNodeB",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Input the name of a POWDER controlled RF eNodeB device to allocate (e.g., 'nuc1').  Leave blank to let the mapping algorithm choose.  If you bind both UE and eNodeB devices, mapping will fail unless there is path between them via the attenuator matrix.")
+pc.defineParameter("FIXED_RRU1", "Bind to a specific RRU1",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Input the name of a POWDER controlled RF device to allocate (e.g., 'nuc1').  Leave blank to let the mapping algorithm choose.  If you bind both UE and RRU devices, mapping will fail unless there is path between them via the attenuator matrix.")
+pc.defineParameter("FIXED_RRU2", "Bind to a specific RRU2",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Input the name of a POWDER controlled RF device to allocate (e.g., 'nuc1').  Leave blank to let the mapping algorithm choose.  If you bind both UE and RRU devices, mapping will fail unless there is path between them via the attenuator matrix.")
 
 pc.defineParameter("SIM_HWTYPE", "Compute hardware type to use (SIM mode only)",
                    portal.ParameterType.STRING, sim_hardware_types[0],
@@ -190,7 +196,7 @@ if params.TYPE == "sim":
     sim_enb.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r SIM_ENB"))
     connectOAI_DS(sim_enb, 1)
     epclink.addNode(sim_enb)
-else:
+else if params.TYPE == "atten":
     # Add a node to act as the ADB target host
     adb_t = request.RawPC("adb-tgt")
     adb_t.disk_image = GLOBALS.ADB_IMG
@@ -223,6 +229,83 @@ else:
 
     # Add a link connecting the NUC eNB and the OAI EPC node.
     epclink.addNode(enb1)
+else:
+    # Add a node to act as the ADB target host
+    adb_t = request.RawPC("adb-tgt")
+    adb_t.disk_image = GLOBALS.ADB_IMG
+
+    # Add first NUC RRU node.
+    rru1 = request.RawPC("rru1")
+    if params.FIXED_RRU1:
+        rru1.component_id = params.FIXED_RRU1
+    rru1.hardware_type = GLOBALS.NUC_HWTYPE
+    rru1.disk_image = GLOBALS.OAI_ENB_IMG
+    rru1.Desire( "rf-controlled", 1 )
+    connectOAI_DS(rru1, 0)
+    rru1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+    rru1_rue1_rf = rru1.addInterface("rue1_rf")
+
+    # Add second NUC RRU node.
+    rru2 = request.RawPC("rru2")
+    if params.FIXED_RRU2:
+        rru2.component_id = params.FIXED_RRU2
+    rru2.hardware_type = GLOBALS.NUC_HWTYPE
+    rru2.disk_image = GLOBALS.OAI_ENB_IMG
+    rru2.Desire( "rf-controlled", 1 )
+    connectOAI_DS(rru2, 0)
+    rru2.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+    rru2_rue1_rf = rru2.addInterface("rue1_rf")
+
+    # Add a NUC eNB node.
+    enb1 = request.RawPC("enb1")
+    if params.FIXED_ENB:
+        enb1.component_id = params.FIXED_ENB
+    enb1.hardware_type = GLOBALS.NUC_HWTYPE
+    enb1.disk_image = GLOBALS.OAI_ENB_IMG
+    enb1.Desire( "rf-controlled", 1 )
+    connectOAI_DS(enb1, 0)
+    enb1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+    # enb1_rue1_rf = enb1.addInterface("rue1_rf")
+
+    # Add an OTS (Nexus 5) UE
+    rue1 = request.UE("rue1")
+    if params.FIXED_UE:
+        rue1.component_id = params.FIXED_UE
+    rue1.hardware_type = GLOBALS.UE_HWTYPE
+    rue1.disk_image = GLOBALS.UE_IMG
+    rue1.Desire( "rf-controlled", 1 )    
+    rue1.adb_target = "adb-tgt"
+    rue1_rru1_rf = rue1.addInterface("rru1_rf")
+    rue1_rru2_rf = rue1.addInterface("rru2_rf")
+
+    # Create the RF link 1 between the Nexus 5 UE and RRU1
+    rflink1 = request.RFLink("rflink1")
+    rflink1.addInterface(rru1_rue1_rf)
+    rflink1.addInterface(rue1_rru1_rf)
+
+    # Create the RF link 2 between the Nexus 5 UE and RRU2
+    rflink2 = request.RFLink("rflink2")
+    rflink2.addInterface(rru2_rue1_rf)
+    rflink2.addInterface(rue1_rru2_rf)
+
+    # Add a link connecting RRU1 and the NUC eNB.
+    rru1link = request.Link("fhaul-1")
+    rru1link.addNode(rru1)  
+    rru1link.addNode(enb1)
+	rru1link.link_multiplexing = True
+	rru1link.vlan_tagging = True
+	rru1link.best_effort = True  
+    
+    # Add a link connecting RRU1 and the NUC eNB.
+    rru2link = request.Link("fhaul-2")
+    rru2link.addNode(rru2)  
+    rru2link.addNode(enb1)
+	rru2link.link_multiplexing = True
+	rru2link.vlan_tagging = True
+	rru2link.best_effort = True      
+
+    # Add a link connecting the NUC eNB and the OAI EPC node.
+    epclink.addNode(enb1)    
 
 # Add OAI EPC (HSS, MME, SPGW) node.
 epc = request.RawPC("epc")
