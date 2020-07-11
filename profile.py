@@ -292,7 +292,7 @@ else:
     rru1link = request.Link("fhaul-1")
     rru1link.addNode(rru1)  
     rru1link.addNode(enb1)
-    #rru1link.link_multiplexing = True
+    rru1link.link_multiplexing = True
     #rru1link.vlan_tagging = True
     #rru1link.best_effort = True  
     
@@ -300,7 +300,7 @@ else:
     rru2link = request.Link("fhaul-2")
     rru2link.addNode(rru2)  
     rru2link.addNode(enb1)
-    #rru2link.link_multiplexing = True
+    rru2link.link_multiplexing = True
     #rru2link.vlan_tagging = True
     #rru2link.best_effort = True      
 
@@ -314,7 +314,7 @@ epc.disk_image = GLOBALS.OAI_EPC_IMG
 connectOAI_DS(epc, 0)
  
 epclink.addNode(epc)
-#epclink.link_multiplexing = True
+epclink.link_multiplexing = True
 #epclink.vlan_tagging = True
 #epclink.best_effort = True
 
