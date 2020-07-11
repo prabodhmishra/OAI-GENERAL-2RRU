@@ -244,6 +244,7 @@ else:
     connectOAI_DS(rru1, 0)
     #rru1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
     rru1_rue1_rf = rru1.addInterface("rue1_rf")
+    
 
     # Add second NUC RRU node.
 #    rru2 = request.RawPC("rru2")
@@ -265,7 +266,7 @@ else:
     enb1.Desire( "rf-controlled", 1 )
     connectOAI_DS(enb1, 0)
     #enb1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
-    # enb1_rue1_rf = enb1.addInterface("rue1_rf")
+    enb1_epc = enb1.addInterface("epc")
 
     # Add an OTS (Nexus 5) UE
     rue1 = request.UE("rue1")
@@ -277,6 +278,7 @@ else:
     rue1.adb_target = "adb-tgt"
     rue1_rru1_rf = rue1.addInterface("rru1_rf")
 #    rue1_rru2_rf = rue1.addInterface("rru2_rf")
+
 
     # Create the RF link 1 between the Nexus 5 UE and RRU1
     rflink1 = request.RFLink("rflink1")
@@ -305,15 +307,18 @@ else:
 #    #rru2link.best_effort = True      
 
     # Add a link connecting the NUC eNB and the OAI EPC node.
-    epclink.addNode(enb1)    
+    #epclink.addNode(enb1)    
 
 # Add OAI EPC (HSS, MME, SPGW) node.
 epc = request.RawPC("epc")
 epc.disk_image = GLOBALS.OAI_EPC_IMG
 #epc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r EPC"))
 connectOAI_DS(epc, 0)
- 
-epclink.addNode(epc)
+epc_enb1 = epc.addInterface("enb1")
+epclink.addInterface(enb1_epc) 
+epclink.addInterface(epc_enb1) 
+
+#epclink.addNode(epc)
 epclink.link_multiplexing = True
 #epclink.vlan_tagging = True
 #epclink.best_effort = True
