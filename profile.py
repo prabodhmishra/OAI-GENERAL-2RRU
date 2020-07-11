@@ -295,8 +295,8 @@ else:
     rru1link.addNode(rru1)  
     rru1link.addNode(enb1)
     rru1link.link_multiplexing = True
-    #rru1link.vlan_tagging = True
-    #rru1link.best_effort = True  
+    rru1link.vlan_tagging = True
+    rru1link.best_effort = True  
     
     # Add a link connecting RRU1 and the NUC eNB.
 #    rru2link = request.Link("fhaul-2")
@@ -307,21 +307,18 @@ else:
 #    #rru2link.best_effort = True      
 
     # Add a link connecting the NUC eNB and the OAI EPC node.
-    #epclink.addNode(enb1)    
+    epclink.addNode(enb1)    
 
 # Add OAI EPC (HSS, MME, SPGW) node.
 epc = request.RawPC("epc")
 epc.disk_image = GLOBALS.OAI_EPC_IMG
 #epc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r EPC"))
 connectOAI_DS(epc, 0)
-epc_enb1 = epc.addInterface("enb1")
-epclink.addInterface(enb1_epc) 
-epclink.addInterface(epc_enb1) 
 
-#epclink.addNode(epc)
+epclink.addNode(epc)
 epclink.link_multiplexing = True
 epclink.vlan_tagging = True
-#epclink.best_effort = True
+epclink.best_effort = True
 
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
