@@ -246,15 +246,15 @@ else:
     rru1_rue1_rf = rru1.addInterface("rue1_rf")
 
     # Add second NUC RRU node.
-    rru2 = request.RawPC("rru2")
-    if params.FIXED_RRU2:
-        rru2.component_id = params.FIXED_RRU2
-    rru2.hardware_type = GLOBALS.NUC_HWTYPE
-    rru2.disk_image = GLOBALS.OAI_ENB_IMG
-    rru2.Desire( "rf-controlled", 1 )
-    connectOAI_DS(rru2, 0)
-    #rru2.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
-    rru2_rue1_rf = rru2.addInterface("rue1_rf")
+#    rru2 = request.RawPC("rru2")
+#    if params.FIXED_RRU2:
+#        rru2.component_id = params.FIXED_RRU2
+#    rru2.hardware_type = GLOBALS.NUC_HWTYPE
+#    rru2.disk_image = GLOBALS.OAI_ENB_IMG
+#    rru2.Desire( "rf-controlled", 1 )
+#    connectOAI_DS(rru2, 0)
+#    #rru2.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+#    rru2_rue1_rf = rru2.addInterface("rue1_rf")
 
     # Add a NUC eNB node.
     enb1 = request.RawPC("enb1")
@@ -276,7 +276,7 @@ else:
     rue1.Desire( "rf-controlled", 1 )    
     rue1.adb_target = "adb-tgt"
     rue1_rru1_rf = rue1.addInterface("rru1_rf")
-    rue1_rru2_rf = rue1.addInterface("rru2_rf")
+#    rue1_rru2_rf = rue1.addInterface("rru2_rf")
 
     # Create the RF link 1 between the Nexus 5 UE and RRU1
     rflink1 = request.RFLink("rflink1")
@@ -284,9 +284,9 @@ else:
     rflink1.addInterface(rue1_rru1_rf)
 
     # Create the RF link 2 between the Nexus 5 UE and RRU2
-    rflink2 = request.RFLink("rflink2")
-    rflink2.addInterface(rru2_rue1_rf)
-    rflink2.addInterface(rue1_rru2_rf)
+#    rflink2 = request.RFLink("rflink2")
+#    rflink2.addInterface(rru2_rue1_rf)
+#    rflink2.addInterface(rue1_rru2_rf)
 
     # Add a link connecting RRU1 and the NUC eNB.
     rru1link = request.Link("fhaul-1")
@@ -297,12 +297,12 @@ else:
     #rru1link.best_effort = True  
     
     # Add a link connecting RRU1 and the NUC eNB.
-    rru2link = request.Link("fhaul-2")
-    rru2link.addNode(rru2)  
-    rru2link.addNode(enb1)
-    rru2link.link_multiplexing = True
-    #rru2link.vlan_tagging = True
-    #rru2link.best_effort = True      
+#    rru2link = request.Link("fhaul-2")
+#    rru2link.addNode(rru2)  
+#    rru2link.addNode(enb1)
+#    rru2link.link_multiplexing = True
+#    #rru2link.vlan_tagging = True
+#    #rru2link.best_effort = True      
 
     # Add a link connecting the NUC eNB and the OAI EPC node.
     epclink.addNode(enb1)    
