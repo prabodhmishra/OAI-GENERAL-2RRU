@@ -320,7 +320,7 @@ epclink.addInterface(epc_enb1)
 
 #epclink.addNode(epc)
 epclink.link_multiplexing = True
-#epclink.vlan_tagging = True
+epclink.vlan_tagging = True
 #epclink.best_effort = True
 
 tour = IG.Tour()
