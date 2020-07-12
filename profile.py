@@ -242,7 +242,7 @@ else:
     rru1.disk_image = GLOBALS.OAI_ENB_IMG
     rru1.Desire( "rf-controlled", 1 )
     connectOAI_DS(rru1, 0)
-    #rru1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+    rru1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
     rru1_rue1_rf = rru1.addInterface("rue1_rf")
     
 
@@ -265,7 +265,7 @@ else:
     enb1.disk_image = GLOBALS.OAI_ENB_IMG
     enb1.Desire( "rf-controlled", 1 )
     connectOAI_DS(enb1, 0)
-    #enb1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
+    enb1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
     enb1_epc = enb1.addInterface("epc")
 
     # Add an OTS (Nexus 5) UE
@@ -312,7 +312,7 @@ else:
 # Add OAI EPC (HSS, MME, SPGW) node.
 epc = request.RawPC("epc")
 epc.disk_image = GLOBALS.OAI_EPC_IMG
-#epc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r EPC"))
+epc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r EPC"))
 connectOAI_DS(epc, 0)
 
 epclink.addNode(epc)
