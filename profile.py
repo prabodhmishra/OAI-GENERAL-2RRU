@@ -115,8 +115,12 @@ class GLOBALS(object):
     OAI_SIM_DS = "urn:publicid:IDN+emulab.net:phantomnet+dataset+PhantomNet:oai"
     UE_IMG  = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:ANDROID444-STD")
     ADB_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU14-64-PNTOOLS")
-    OAI_EPC_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU16-64-OAIEPC")
+    #OAI_EPC_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU16-64-OAIEPC")
+    OAI_EPC_IMG = "urn:publicid:IDN+emulab.net+image+CCIT//OAI-GENERAL-2RRU.epc"
     OAI_ENB_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:OAI-Real-Hardware.enb1")
+    OAI_RCC_IMG = "urn:publicid:IDN+emulab.net+image+CCIT//OAI-GENERAL-2RRU.enb1" 
+    OAI_RRU1_IMG = "urn:publicid:IDN+emulab.net+image+CCIT//OAI-GENERAL-2RRU.rru1" 
+    OAI_RRU2_IMG = "urn:publicid:IDN+emulab.net+image+CCIT//OAI-GENERAL-2RRU.rru2" 
     OAI_SIM_IMG = URN.Image(PN.PNDEFS.PNET_AM, "PhantomNet:UBUNTU14-64-OAI")
     OAI_CONF_SCRIPT = "/usr/bin/sudo /local/repository/bin/config_oai.pl"
     NUC_HWTYPE = "nuc5300"
@@ -239,7 +243,7 @@ else:
     if params.FIXED_RRU1:
         rru0.component_id = params.FIXED_RRU1
     rru0.hardware_type = GLOBALS.NUC_HWTYPE
-    rru0.disk_image = GLOBALS.OAI_ENB_IMG
+    rru0.disk_image = GLOBALS.OAI_RRU1_IMG
     rru0.Desire( "rf-controlled", 1 )
     connectOAI_DS(rru0, 0)
     rru0.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
@@ -251,7 +255,7 @@ else:
     if params.FIXED_RRU2:
         rru1.component_id = params.FIXED_RRU2
     rru1.hardware_type = GLOBALS.NUC_HWTYPE
-    rru1.disk_image = GLOBALS.OAI_ENB_IMG
+    rru1.disk_image = GLOBALS.OAI_RRU2_IMG
     rru1.Desire( "rf-controlled", 1 )
     connectOAI_DS(rru1, 0)
     rru1.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
@@ -262,7 +266,7 @@ else:
     if params.FIXED_ENB:
         rcc.component_id = params.FIXED_ENB
     rcc.hardware_type = GLOBALS.NUC_HWTYPE
-    rcc.disk_image = GLOBALS.OAI_ENB_IMG
+    rcc.disk_image = GLOBALS.OAI_RCC_IMG
     rcc.Desire( "rf-controlled", 1 )
     connectOAI_DS(rcc, 0)
     rcc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r ENB"))
