@@ -176,6 +176,11 @@ pc.defineParameter("SIM_HWTYPE", "Compute hardware type to use (SIM mode only)",
                    sim_hardware_types, advanced=True,
                    longDescription="Use this parameter if you would like to select a different hardware type to use FOR SIMULATED MODE.  The types in this list are known to work.")
 
+pc.defineParameter("EPC_HWTYPE", "Compute hardware type to use",
+                   portal.ParameterType.STRING, sim_hardware_types[0],
+                   sim_hardware_types, advanced=True,
+                   longDescription="Use this parameter if you would like to select a different hardware type to use for EPC.  The types in this list are known to work.")
+
 params = pc.bindParameters()
 
 #
@@ -335,6 +340,7 @@ else:
 # Add OAI EPC (HSS, MME, SPGW) node.
 epc = request.RawPC("epc")
 epc.disk_image = GLOBALS.OAI_EPC_IMG
+epc.hardware_type = params.EPC_HWTYPE
 epc.addService(rspec.Execute(shell="sh", command=GLOBALS.OAI_CONF_SCRIPT + " -r EPC"))
 connectOAI_DS(epc, 0)
 
