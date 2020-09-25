@@ -152,7 +152,7 @@ pc = portal.Context()
 # Profile parameters.
 #
 
-sim_hardware_types = ['d430','d740']
+sim_hardware_types = ['d430','d740','d710']
 
 pc.defineParameter("TYPE", "Experiment type",
                    portal.ParameterType.STRING,"2RRU",[("sim","Simulated UE/eNodeB"),("1RRU","OTS UE with RF attenuator 1 RRU"),("2RRU","OTS UE with RF attenuator and 2 RRUs")],
