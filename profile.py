@@ -171,15 +171,15 @@ pc.defineParameter("FIXED_RRU2", "Bind to a specific RRU2",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Input the name of a POWDER controlled RF device to allocate (e.g., 'nuc1').  Leave blank to let the mapping algorithm choose.  If you bind both UE and RRU devices, mapping will fail unless there is path between them via the attenuator matrix.")
 
+pc.defineParameter("EPC_HWTYPE", "Compute hardware type to use for EPC and ADB-TGT",
+                   portal.ParameterType.STRING, sim_hardware_types[0],
+                   sim_hardware_types, advanced=True,
+                   longDescription="Use this parameter if you would like to select a different hardware type to use for EPC.  The types in this list are known to work.")
+
 pc.defineParameter("SIM_HWTYPE", "Compute hardware type to use (SIM mode only)",
                    portal.ParameterType.STRING, sim_hardware_types[0],
                    sim_hardware_types, advanced=True,
                    longDescription="Use this parameter if you would like to select a different hardware type to use FOR SIMULATED MODE.  The types in this list are known to work.")
-
-pc.defineParameter("EPC_HWTYPE", "Compute hardware type to use",
-                   portal.ParameterType.STRING, sim_hardware_types[0],
-                   sim_hardware_types, advanced=True,
-                   longDescription="Use this parameter if you would like to select a different hardware type to use for EPC.  The types in this list are known to work.")
 
 params = pc.bindParameters()
 
@@ -209,6 +209,7 @@ elif params.TYPE == "1RRU":
     # Add a node to act as the ADB target host
     adb_t = request.RawPC("adb-tgt")
     adb_t.disk_image = GLOBALS.ADB_IMG
+    adb_t.hardware_type = params.EPC_HWTYPE
 
     # Add first NUC RRU node.
     rru0 = request.RawPC("rru0")
@@ -261,6 +262,7 @@ else:
     # Add a node to act as the ADB target host
     adb_t = request.RawPC("adb-tgt")
     adb_t.disk_image = GLOBALS.ADB_IMG
+    adb_t.hardware_type = params.EPC_HWTYPE
 
     # Add first NUC RRU node.
     rru0 = request.RawPC("rru0")
